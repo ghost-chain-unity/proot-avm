@@ -1,0 +1,19 @@
+
+# SSH server configuration for Alpine VM
+
+# Port (default 22, but we'll use port forwarding)
+#Port 22
+
+# Listen on all interfaces
+ListenAddress 0.0.0.0
+
+# Authentication
+PermitRootLogin yes
+PasswordAuthentication yes
+
+# Security
+AllowTcpForwarding yes
+X11Forwarding yes
+
+# Subsystems
+Subsystem sftp /usr/libexec/sftp-server

@@ -1,0 +1,23 @@
+
+# Pre-configured answers for Alpine setup-alpine
+
+# System configuration
+KEYMAPOPTS="us us"
+HOSTNAMEOPTS="alpine-vm"
+TIMEZONEOPTS="UTC"
+PROXYOPTS="none"
+
+# User configuration
+USEROPTS="none"
+
+# SSH configuration
+SSHDOPTS="openssh"
+
+# NTP configuration
+NTPDOPTS="chrony"
+
+# Disk configuration
+DISKOPTS="sys"
+
+# APK repositories
+APKREPOSOPTS="main"
