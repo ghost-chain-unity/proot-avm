@@ -40,9 +40,9 @@ jobs:
 
     - name: Run shell script tests
       run: |
-        chmod +x scripts/utils/test-*.sh
-        ./scripts/utils/test-installer.sh
-        ./scripts/utils/test-website.sh
+        chmod +x test-*.sh
+        ./test-installer.sh
+        ./test-website.sh
 
     - name: Lint shell scripts
       run: |
