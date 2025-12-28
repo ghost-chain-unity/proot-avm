@@ -1,7 +1,20 @@
 
-#!/bin/bash
-# proot-avm Installation Agent
-# Modern CLI installer with progress bars and error handling
+#!/usr/bin/env bash
+# DEPRECATED: proot-avm Installation Agent (Legacy)
+# This script is deprecated. Use install.sh --agent instead.
+# Will be removed in future versions.
+
+echo "⚠️  WARNING: This script is deprecated!"
+echo "   Please use: ./install.sh --agent"
+echo "   Or run: curl -sSL https://alpinevm.qzz.io/install | bash"
+echo ""
+read -p "Continue anyway? (y/N): " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 1
+fi
+
+# Original code follows...
 
 # Colors
 RED='\033[0;31m'
@@ -114,6 +127,12 @@ install_dev_env() {
         chmod +x enhanced-bootstrap.sh
         ./enhanced-bootstrap.sh
     " || handle_error "Failed to install development environment"
+        # Install packages in Alpine
+        proot-distro login ubuntu --termux-home -- bash -c "
+            cd ~/qemu-vm && cp \"$REPO_DIR/scripts/enhanced-bootstrap.sh\" .
+            chmod +x enhanced-bootstrap.sh
+            ./enhanced-bootstrap.sh
+        " || handle_error "Failed to install development environment"
 
     echo -e "${GREEN}✅ Development environment installed${NC}"
 }
@@ -127,8 +146,9 @@ final_config() {
     cp "$REPO_DIR/scripts/alpine-vm.sh" ~/qemu-vm/ 2>/dev/null || cp /usr/bin/alpine-vm.sh ~/qemu-vm/ || handle_error "Failed to copy AVM script"
     chmod +x ~/qemu-vm/alpine-vm.sh || handle_error "Failed to set permissions"
 
-    # Create symlink
-    ln -sf ~/qemu-vm/alpine-vm.sh /usr/bin/avm || handle_error "Failed to create symlink"
+    # Create user-local symlink (avoid requiring root)
+    mkdir -p "$HOME/.local/bin" || handle_error "Failed to create local bin"
+    ln -sf "$HOME/qemu-vm/alpine-vm.sh" "$HOME/.local/bin/avm" || handle_error "Failed to create symlink"
 
     # Configure bashrc
     echo 'alias avm="~/alpine-start.sh"' >> ~/.bashrc || handle_error "Failed to update bashrc"
@@ -138,6 +158,10 @@ final_config() {
         echo 'alias avm=\"~/alpine-vm.sh\"' >> ~/.bashrc
         echo 'export PATH=\$PATH:~/qemu-vm' >> ~/.bashrc
     " || handle_error "Failed to update proot-distro bashrc"
+        proot-distro login ubuntu --termux-home -- bash -c "
+            echo 'alias avm=\"~/alpine-vm.sh\"' >> ~/.bashrc
+            grep -qxF 'export PATH=\"\$PATH:~/qemu-vm\"' ~/.bashrc || echo 'export PATH=\"\$PATH:~/qemu-vm\"' >> ~/.bashrc
+        " || handle_error "Failed to update proot-distro bashrc"
 
     echo -e "${GREEN}✅ Configuration complete${NC}"
 }

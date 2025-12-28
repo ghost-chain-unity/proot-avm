@@ -1,37 +1,11 @@
 
-#!/bin/bash
+#!/usr/bin/env bash
 # proot-avm Unified Installer
 # Modern CLI installer with progress bars, error handling, and full automation
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-MAGENTA='\033[0;35m'
-NC='\033[0m' # No Color
-
-# Progress bar function
-progress_bar() {
-    local duration=${1:-10}
-    local width=${2:-50}
-    local increment=$((duration * 1000 / width))
-
-    printf "["
-    for ((i=0; i<width; i++)); do
-        printf "▓"
-        usleep $increment
-    done
-    printf "] 100%%\n"
-}
-
-# Error handling
-handle_error() {
-    echo -e "${RED}❌ Error: $1${NC}"
-    echo -e "${YELLOW}💡 Please check the logs and try again.${NC}"
-    exit 1
-}
+# Source shared functions
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/scripts/shared-functions.sh"
 
 # Welcome screen
 show_welcome() {
@@ -103,9 +77,9 @@ setup_alpine_vm() {
     echo -e "${GREEN}✅ Alpine VM setup complete${NC}"
 }
 
-# Install development environment
-install_dev_env() {
-    echo -e "${CYAN}[4/5] Installing development environment...${NC}"
+# Install development environment with agent
+install_dev_env_agent() {
+    echo -e "${CYAN}[4/5] Installing development environment with agent...${NC}"
     progress_bar 4 &
 
     # Install packages in Ubuntu
@@ -113,14 +87,14 @@ install_dev_env() {
         apt-get update -qq && apt-get install -y wget curl qemu-utils openssh-server
     " || handle_error "Failed to install packages in Ubuntu"
 
-    # Install packages in Alpine
+    # Copy and run agent in Alpine VM
     proot-distro login ubuntu --termux-home -- bash -c "
-        cd ~/qemu-vm && cp ~/proot-avm/scripts/avm-agent.sh .
+        cd ~/qemu-vm && cp \"$REPO_DIR/scripts/avm-agent.sh\" .
         chmod +x avm-agent.sh
         ./avm-agent.sh
-    " || handle_error "Failed to install development environment"
+    " || handle_error "Failed to run agent in Alpine VM"
 
-    echo -e "${GREEN}✅ Development environment installed${NC}"
+    echo -e "${GREEN}✅ Development environment with agent installed${NC}"
 }
 
 # Final configuration
@@ -133,14 +107,24 @@ final_config() {
     cp ~/proot-avm/scripts/alpine-start.sh ~/ || handle_error "Failed to copy start script"
     chmod +x ~/qemu-vm/alpine-vm.sh || handle_error "Failed to set permissions"
 
-    # Create symlink
-    ln -sf ~/qemu-vm/alpine-vm.sh /usr/bin/avm || handle_error "Failed to create symlink"
 
-    # Configure bashrc
+    # Install into user-local bin to avoid requiring root
+    mkdir -p "$HOME/.local/bin" || handle_error "Failed to create local bin"
+    ln -sf "$HOME/qemu-vm/alpine-vm.sh" "$HOME/.local/bin/avm" || handle_error "Failed to create symlink"
+
+    # Configure bashrc (alias + ensure local bin is in PATH)
     echo 'alias avm="~/alpine-start.sh"' >> ~/.bashrc || handle_error "Failed to update bashrc"
+    grep -qxF 'export PATH="$PATH:$HOME/.local/bin"' ~/.bashrc || echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc || handle_error "Failed to update bashrc PATH"
 
     # Configure proot-distro bashrc
     proot-distro login ubuntu --termux-home -- bash -c "
+        echo '# proot-avm AI Configuration' >> ~/.bashrc
+        echo '# Set your preferred AI provider: openai, claude, ollama, openhands' >> ~/.bashrc
+        echo 'export AVM_AI_PROVIDER=\"ollama\"' >> ~/.bashrc
+        echo '# export OPENAI_API_KEY=\"your-key-here\"' >> ~/.bashrc
+        echo '# export ANTHROPIC_API_KEY=\"your-key-here\"' >> ~/.bashrc
+        echo '' >> ~/.bashrc
+    " || handle_error "Failed to configure proot-distro bashrc"
         echo 'alias avm=\"~/alpine-vm.sh\"' >> ~/.bashrc
         echo 'export PATH=\$PATH:~/qemu-vm' >> ~/.bashrc
         echo 'export PATH=\$PATH:~/proot-avm/scripts' >> ~/.bashrc
@@ -154,7 +138,12 @@ show_completion() {
     echo -e "${MAGENTA}
 🎉 Installation complete!
 
-Quick start:
+Next steps:
+  1. Run: avm first-boot  # Setup Alpine Linux (one-time)
+  2. Run: avm start      # Start the VM
+  3. Run: avm ssh        # Connect to VM (wait for boot ~1-2 min)
+
+Quick commands:
   $ avm start    # Start Alpine VM
   $ avm ssh      # SSH into VM
   $ avm help     # Show all commands
@@ -164,11 +153,30 @@ ${NC}"
 }
 
 # Main script execution
+# Parse options
+AGENT_MODE=false
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --agent)
+      AGENT_MODE=true
+      shift
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
 show_welcome
 check_termux
 check_dependencies
 install_proot
 setup_alpine_vm
-install_dev_env
+if $AGENT_MODE; then
+  install_dev_env_agent
+else
+  install_dev_env
+fi
 final_config
 show_completion

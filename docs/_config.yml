@@ -1,0 +1,50 @@
+# GitHub Pages Configuration for proot-avm
+# This file tells GitHub Pages how to serve the website
+
+# Site settings
+title: "proot-avm - Alpine VM Manager for Termux"
+description: "Modern Alpine Linux VM manager for Termux with Docker support, automated development environment setup, and comprehensive tooling."
+url: "https://ghost-chain-unity.github.io"
+baseurl: "/proot-avm"
+repository: "ghost-chain-unity/proot-avm"
+
+# Build settings (not used since we're serving static files)
+# But keeping for future Jekyll integration if needed
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - .bundle/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+
+# Include files that should be processed
+include:
+  - docs/
+
+# Plugins (none needed for static site)
+plugins: []
+
+# Collections (none needed)
+collections: {}
+
+# Default front matter
+defaults: []
+
+# Custom variables
+author: "ghost-chain-unity"
+version: "2.0.0"
+github_username: "ghost-chain-unity"
+repo_name: "proot-avm"
+
+# Social media
+social:
+  github: "https://github.com/ghost-chain-unity/proot-avm"
+  issues: "https://github.com/ghost-chain-unity/proot-avm/issues"
+  discussions: "https://github.com/ghost-chain-unity/proot-avm/discussions"

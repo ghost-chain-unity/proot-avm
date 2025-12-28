@@ -1,0 +1,190 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [published]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-utils shellcheck curl wget
+
+    - name: Run Go tests
+      run: |
+        cd avm-go
+        go test -v -race -coverprofile=coverage.out ./...
+        go tool cover -html=coverage.out -o coverage.html
+
+    - name: Run shell script tests
+      run: |
+        chmod +x scripts/utils/test-*.sh
+        ./scripts/utils/test-installer.sh
+        ./scripts/utils/test-website.sh
+
+    - name: Lint shell scripts
+      run: |
+        find scripts -name "*.sh" -exec shellcheck {} \;
+
+    - name: Lint Go code
+      run: |
+        cd avm-go
+        go vet ./...
+        gofmt -d .
+        test -z "$(gofmt -d .)"
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./avm-go/coverage.out
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+        args: --timeout=5m
+
+    - name: Check shell scripts
+      run: |
+        sudo apt-get install -y shellcheck
+        find scripts -name "*.sh" -exec shellcheck {} \;
+
+  build:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, darwin, windows]
+        goarch: [amd64, arm64]
+        exclude:
+          - goos: windows
+            goarch: arm64
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Create dist directory
+      run: mkdir -p dist
+
+    - name: Build binary
+      run: |
+        cd avm-go
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags="-X main.version=${{ github.ref_name }} -X main.commit=${{ github.sha }} -X main.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ../dist/avm-${{ matrix.goos }}-${{ matrix.goarch }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: avm-${{ matrix.goos }}-${{ matrix.goarch }}
+        path: dist/avm-${{ matrix.goos }}-${{ matrix.goarch }}
+
+  release:
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: dist/
+
+    - name: Create release archives
+      run: |
+        cd dist
+        for file in avm-*; do
+          if [[ "$file" == *windows* ]]; then
+            zip "${file}.zip" "$file"
+          else
+            tar -czf "${file}.tar.gz" "$file"
+          fi
+        done
+
+    - name: Generate changelog
+      run: |
+        # Generate changelog from git history
+        echo "# Changelog" > CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        echo "## ${{ github.event.release.tag_name }}" >> CHANGELOG.md
+        echo "" >> CHANGELOG.md
+
+        # Get commits since last tag
+        git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD~1)..HEAD >> CHANGELOG.md
+        echo "" >> CHANGELOG.md
+
+        # Add release info
+        echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$(git describe --tags --abbrev=0 HEAD~1)...${{ github.event.release.tag_name }}" >> CHANGELOG.md
+
+    - name: Update release with changelog and assets
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: CHANGELOG.md
+        files: dist/*.tar.gz dist/*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-docs:
+    needs: [test, lint]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: |
+        cd docs
+        npm install
+
+    - name: Build docs
+      run: |
+        cd docs
+        npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/_site
+        cname: alpinevm.qzz.io

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>proot-avm - Alpine VM Manager for Termux</title>
+    <meta name="description" content="Modern Alpine Linux VM manager for Termux with Docker support, automated setup, and comprehensive development environment.">
+    <meta name="keywords" content="proot-avm, Alpine Linux, Termux, VM, Docker, development environment, QEMU, automation">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-cube"></i>
+                <span>proot-avm</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#install" class="nav-link">Install</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#docs" class="nav-link">Docs</a>
+                <a href="#requirements" class="nav-link">Requirements</a>
+                <a href="https://github.com/ghost-chain-unity/proot-avm" class="nav-link github" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-star"></i>
+                    v2.0.0 - Latest Release
+                </div>
+                <h1 class="hero-title">
+                    Alpine VM Manager<br>
+                    <span class="hero-subtitle">for Termux</span>
+                </h1>
+                <p class="hero-description">
+                    Modern Alpine Linux VM manager with Docker support, automated development environment setup,
+                    and comprehensive tooling for Termux and Linux systems.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="scrollToSection('install')">
+                        <i class="fas fa-rocket"></i>
+                        Get Started
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyCommand('curl -fsSL https://raw.githubusercontent.com/ghost-chain-unity/proot-avm/main/install-one-liner.sh | bash')">
+                        <i class="fas fa-terminal"></i>
+                        Quick Install
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">2.0</div>
+                        <div class="stat-label">Version</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Platforms</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Possibilities</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="terminal-button red"></span>
+                            <span class="terminal-button yellow"></span>
+                            <span class="terminal-button green"></span>
+                        </div>
+                        <div class="terminal-title">proot-avm@alpine-vm</div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">avm start</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-output">Starting Alpine VM...</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-output">VM started successfully on port 2222</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">avm ssh</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-output">Welcome to Alpine Linux!</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-output">alpine-vm:~# docker ps</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-output">CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES</span>
+                        </div>
+                        <div class="terminal-cursor"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="install" class="install">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Installation</h2>
+                <p class="section-description">Choose your preferred installation method</p>
+            </div>
+
+            <div class="install-grid">
+                <!-- One-Liner Install -->
+                <div class="install-card featured">
+                    <div class="install-header">
+                        <div class="install-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <div class="install-meta">
+                            <h3 class="install-title">One-Liner Install</h3>
+                            <span class="install-badge recommended">Recommended</span>
+                        </div>
+                    </div>
+                    <div class="install-content">
+                        <p class="install-description">
+                            Complete installation with all scripts, Go CLI, and documentation in one command.
+                        </p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCommand('curl -fsSL https://raw.githubusercontent.com/ghost-chain-unity/proot-avm/main/install-one-liner.sh | bash')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <code>curl -fsSL https://raw.githubusercontent.com/ghost-chain-unity/proot-avm/main/install-one-liner.sh | bash</code>
+                        </div>
+                        <div class="install-features">
+                            <span class="feature-tag">Complete Setup</span>
+                            <span class="feature-tag">Auto Dependencies</span>
+                            <span class="feature-tag">All Scripts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Binary Downloads -->
+                <div class="install-card">
+                    <div class="install-header">
+                        <div class="install-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="install-meta">
+                            <h3 class="install-title">Binary Downloads</h3>
+                            <span class="install-badge fastest">Fastest</span>
+                        </div>
+                    </div>
+                    <div class="install-content">
+                        <p class="install-description">
+                            Pre-compiled binaries for instant installation. No compilation required.
+                        </p>
+                        <div class="platform-grid">
+                            <a href="https://github.com/ghost-chain-unity/proot-avm/releases/download/v2.0.0/avm-linux-amd64.tar.gz" class="platform-btn" target="_blank" onclick="handleBinaryDownload(event, 'Linux x64')">
+                                <i class="fab fa-linux"></i>
+                                Linux x64
+                            </a>
+                            <a href="https://github.com/ghost-chain-unity/proot-avm/releases/download/v2.0.0/avm-linux-arm64.tar.gz" class="platform-btn" target="_blank" onclick="handleBinaryDownload(event, 'Linux ARM64')">
+                                <i class="fab fa-android"></i>
+                                Linux ARM64
+                            </a>
+                            <a href="https://github.com/ghost-chain-unity/proot-avm/releases/download/v2.0.0/avm-darwin-amd64.tar.gz" class="platform-btn" target="_blank" onclick="handleBinaryDownload(event, 'macOS Intel')">
+                                <i class="fab fa-apple"></i>
+                                macOS Intel
+                            </a>
+                            <a href="https://github.com/ghost-chain-unity/proot-avm/releases/download/v2.0.0/avm-darwin-arm64.tar.gz" class="platform-btn" target="_blank" onclick="handleBinaryDownload(event, 'macOS ARM64')">
+                                <i class="fab fa-apple"></i>
+                                macOS ARM64
+                            </a>
+                            <a href="https://github.com/ghost-chain-unity/proot-avm/releases/download/v2.0.0/avm-windows-amd64.zip" class="platform-btn" target="_blank" onclick="handleBinaryDownload(event, 'Windows x64')">
+                                <i class="fab fa-windows"></i>
+                                Windows x64
+                            </a>
+                            <a href="https://github.com/ghost-chain-unity/proot-avm/releases/download/v2.0.0/avm-freebsd-amd64.tar.gz" class="platform-btn" target="_blank" onclick="handleBinaryDownload(event, 'FreeBSD x64')">
+                                <i class="fas fa-server"></i>
+                                FreeBSD x64
+                            </a>
+                        </div>
+                        <div class="install-features">
+                            <span class="feature-tag">Pre-compiled</span>
+                            <span class="feature-tag">Instant Setup</span>
+                            <span class="feature-tag">All Platforms</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manual Installation -->
+                <div class="install-card">
+                    <div class="install-header">
+                        <div class="install-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="install-meta">
+                            <h3 class="install-title">Manual Install</h3>
+                            <span class="install-badge advanced">Advanced</span>
+                        </div>
+                    </div>
+                    <div class="install-content">
+                        <p class="install-description">
+                            Clone repository and install manually for full control over the process.
+                        </p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCommand('git clone https://github.com/ghost-chain-unity/proot-avm.git\\ncd proot-avm\\n./install.sh --agent')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <code>git clone https://github.com/ghost-chain-unity/proot-avm.git<br>cd proot-avm<br>./install.sh --agent</code>
+                        </div>
+                        <div class="install-features">
+                            <span class="feature-tag">Full Control</span>
+                            <span class="feature-tag">Source Code</span>
+                            <span class="feature-tag">Customizable</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package Manager -->
+                <div class="install-card">
+                    <div class="install-header">
+                        <div class="install-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="install-meta">
+                            <h3 class="install-title">Package Manager</h3>
+                            <span class="install-badge arch">Arch Linux</span>
+                        </div>
+                    </div>
+                    <div class="install-content">
+                        <p class="install-description">
+                            Install via package manager for system integration and automatic updates.
+                        </p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCommand('git clone https://github.com/ghost-chain-unity/proot-avm.git\\ncd proot-avm\\nmakepkg -si')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <code>git clone https://github.com/ghost-chain-unity/proot-avm.git<br>cd proot-avm<br>makepkg -si</code>
+                        </div>
+                        <div class="install-features">
+                            <span class="feature-tag">System Integration</span>
+                            <span class="feature-tag">Auto Updates</span>
+                            <span class="feature-tag">Dependencies</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Features</h2>
+                <p class="section-description">Everything you need for modern development</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fab fa-docker"></i>
+                    </div>
+                    <h3 class="feature-title">Docker Ready</h3>
+                    <p class="feature-description">
+                        Pre-configured Docker and Docker Compose environment with containerd runtime.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="fas fa-code"></div>
+                    <h3 class="feature-title">Full Dev Stack</h3>
+                    <p class="feature-description">
+                        Python 3.12, Rust, Node.js, Go, UV package manager, and comprehensive build tools.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="fas fa-brain"></div>
+                    <h3 class="feature-title">AI Assistant</h3>
+                    <p class="feature-description">
+                        Multi-provider AI support (OpenAI, Claude, Ollama, OpenHands) for intelligent VM management and development assistance.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="fas fa-terminal"></div>
+                    <h3 class="feature-title">Modern CLI</h3>
+                    <p class="feature-description">
+                        Go-based CLI with auto-completion, web dashboard, TUI, and monitoring tools.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="fas fa-camera"></div>
+                    <h3 class="feature-title">Snapshots</h3>
+                    <p class="feature-description">
+                        Create, manage, and restore VM snapshots for development workflow optimization.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="fas fa-shield-alt"></div>
+                    <h3 class="feature-title">Secure SSH</h3>
+                    <p class="feature-description">
+                        Automated SSH setup with generated credentials and secure key-based authentication.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="fas fa-rocket"></div>
+                    <h3 class="feature-title">Auto Setup</h3>
+                    <p class="feature-description">
+                        One-command installation with automatic dependency resolution and configuration.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="fas fa-globe"></div>
+                    <h3 class="feature-title">Cross-Platform</h3>
+                    <p class="feature-description">
+                        Native support for Linux, macOS, Windows, Android, and FreeBSD platforms.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Requirements Section -->
+    <section id="requirements" class="requirements">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Requirements</h2>
+                <p class="section-description">System requirements and dependencies</p>
+            </div>
+
+            <div class="requirements-content">
+                <div class="requirements-grid">
+                    <!-- Core Requirements -->
+                    <div class="requirement-card">
+                        <h3 class="requirement-title">
+                            <i class="fas fa-microchip"></i>
+                            Core Requirements
+                        </h3>
+                        <ul class="requirement-list">
+                            <li><strong>Architecture:</strong> x86_64, ARM64, ARMv7</li>
+                            <li><strong>RAM:</strong> Minimum 2GB, Recommended 4GB+</li>
+                            <li><strong>Storage:</strong> 5GB free space for VM + containers</li>
+                            <li><strong>OS:</strong> Linux, macOS, Windows, Android (Termux)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Dependencies -->
+                    <div class="requirement-card">
+                        <h3 class="requirement-title">
+                            <i class="fas fa-cogs"></i>
+                            Dependencies
+                        </h3>
+                        <div class="dependency-section">
+                            <h4>Linux/Android:</h4>
+                            <div class="code-block small">
+                                <code>proot-distro qemu-system-x86_64 qemu-utils wget curl openssh bash</code>
+                            </div>
+                        </div>
+                        <div class="dependency-section">
+                            <h4>macOS:</h4>
+                            <div class="code-block small">
+                                <code>qemu wget curl openssh bash</code>
+                            </div>
+                        </div>
+                        <div class="dependency-section">
+                            <h4>Windows:</h4>
+                            <div class="code-block small">
+                                <code>qemu wget curl openssh bash (via WSL/MSYS2)</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optional Dependencies -->
+                    <div class="requirement-card">
+                        <h3 class="requirement-title">
+                            <i class="fas fa-plus-circle"></i>
+                            Optional
+                        </h3>
+                        <ul class="requirement-list">
+                            <li><strong>Docker:</strong> Alternative container runtime</li>
+                            <li><strong>Podman:</strong> Alternative container runtime</li>
+                            <li><strong>VNC Viewer:</strong> For graphical VM access</li>
+                            <li><strong>virt-manager:</strong> GUI VM management</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Installation Commands -->
+                <div class="install-commands">
+                    <h3 class="commands-title">Quick Dependency Installation</h3>
+
+                    <!-- Termux -->
+                    <div class="command-group">
+                        <h4><i class="fab fa-android"></i> Termux (Android)</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCommand('pkg update && pkg install proot-distro qemu-system-x86-64 qemu-utils wget curl openssh')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <code>pkg update && pkg install proot-distro qemu-system-x86-64 qemu-utils wget curl openssh</code>
+                        </div>
+                    </div>
+
+                    <!-- Ubuntu/Debian -->
+                    <div class="command-group">
+                        <h4><i class="fab fa-ubuntu"></i> Ubuntu/Debian</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCommand('sudo apt update && sudo apt install qemu-system-x86 qemu-utils wget curl openssh-server')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <code>sudo apt update && sudo apt install qemu-system-x86 qemu-utils wget curl openssh-server</code>
+                        </div>
+                    </div>
+
+                    <!-- Arch Linux -->
+                    <div class="command-group">
+                        <h4><i class="fab fa-linux"></i> Arch Linux</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCommand('sudo pacman -S qemu-desktop wget curl openssh')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <code>sudo pacman -S qemu-desktop wget curl openssh</code>
+                        </div>
+                    </div>
+
+                    <!-- macOS -->
+                    <div class="command-group">
+                        <h4><i class="fab fa-apple"></i> macOS</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCommand('brew install qemu wget curl openssh')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <code>brew install qemu wget curl openssh</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="docs" class="docs">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Documentation</h2>
+                <p class="section-description">Comprehensive guides and references</p>
+            </div>
+
+            <div class="docs-grid">
+                <a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/README.md" class="doc-card" target="_blank">
+                    <div class="doc-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="doc-content">
+                        <h3 class="doc-title">README</h3>
+                        <p class="doc-description">Project overview, quick start guide, and basic usage instructions.</p>
+                    </div>
+                    <div class="doc-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/SETUP.md" class="doc-card" target="_blank">
+                    <div class="doc-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="doc-content">
+                        <h3 class="doc-title">Setup Guide</h3>
+                        <p class="doc-description">Detailed installation instructions, post-setup configuration, and troubleshooting.</p>
+                    </div>
+                    <div class="doc-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/DEVELOPMENT.md" class="doc-card" target="_blank">
+                    <div class="doc-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="doc-content">
+                        <h3 class="doc-title">Development</h3>
+                        <p class="doc-description">Development environment setup, workflow guidelines, and contribution standards.</p>
+                    </div>
+                    <div class="doc-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/CONTRIBUTING.md" class="doc-card" target="_blank">
+                    <div class="doc-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="doc-content">
+                        <h3 class="doc-title">Contributing</h3>
+                        <p class="doc-description">How to contribute to the project, coding standards, and community guidelines.</p>
+                    </div>
+                    <div class="doc-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/ROADMAP.md" class="doc-card" target="_blank">
+                    <div class="doc-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <div class="doc-content">
+                        <h3 class="doc-title">Roadmap</h3>
+                        <p class="doc-description">Future development plans, upcoming features, and project milestones.</p>
+                    </div>
+                    <div class="doc-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <a href="https://github.com/ghost-chain-unity/proot-avm/issues" class="doc-card" target="_blank">
+                    <div class="doc-icon">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <div class="doc-content">
+                        <h3 class="doc-title">Issues & Support</h3>
+                        <p class="doc-description">Report bugs, request features, and get help from the community.</p>
+                    </div>
+                    <div class="doc-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-cube"></i>
+                        <span>proot-avm</span>
+                    </div>
+                    <p class="footer-description">
+                        Modern Alpine Linux VM manager for Termux with comprehensive development environment.
+                    </p>
+                    <div class="footer-social">
+                        <a href="https://github.com/ghost-chain-unity/proot-avm" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ghost-chain-unity/proot-avm/discussions" target="_blank" class="social-link">
+                            <i class="fas fa-comments"></i>
+                        </a>
+                        <a href="https://github.com/ghost-chain-unity/proot-avm/issues" target="_blank" class="social-link">
+                            <i class="fas fa-bug"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4 class="footer-title">Installation</h4>
+                        <ul class="footer-list">
+                            <li><a href="#install">One-Liner</a></li>
+                            <li><a href="#install">Binary Downloads</a></li>
+                            <li><a href="#install">Manual Setup</a></li>
+                            <li><a href="#requirements">Requirements</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4 class="footer-title">Documentation</h4>
+                        <ul class="footer-list">
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/README.md" target="_blank">README</a></li>
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/SETUP.md" target="_blank">Setup Guide</a></li>
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/DEVELOPMENT.md" target="_blank">Development</a></li>
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4 class="footer-title">Community</h4>
+                        <ul class="footer-list">
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/issues" target="_blank">Issues</a></li>
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/discussions" target="_blank">Discussions</a></li>
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/pulls" target="_blank">Pull Requests</a></li>
+                            <li><a href="https://github.com/ghost-chain-unity/proot-avm/releases" target="_blank">Releases</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2025 proot-avm. Made with <i class="fas fa-heart"></i> for developers.</p>
+                </div>
+                <div class="footer-license">
+                    <p>Licensed under <a href="https://github.com/ghost-chain-unity/proot-avm/blob/main/LICENSE" target="_blank">MIT License</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Command copied to clipboard!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

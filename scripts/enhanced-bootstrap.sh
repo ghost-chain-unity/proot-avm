@@ -61,3 +61,23 @@ sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config || error
 service sshd start || error_exit "Failed to start SSH"
 
 echo -e "${GREEN}✅ Bootstrap complete!${NC}"
+
+# Summary
+echo -e "${MAGENTA}
+🎉 Alpine VM Bootstrap Complete!
+
+Login Information:
+- Hostname: alpine-vm
+- Username: root
+- Password: alpine (default)
+- SSH Port: 2222
+
+Installed:
+- Docker, containerd
+- UV, Python 3.12.11
+- Rust, Node.js, Go
+- Make, CMake, Zstd-dev, Clang, Glibc
+- OpenHands
+
+💡 Run 'source /etc/profile' to load environment.
+${NC}"

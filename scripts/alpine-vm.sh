@@ -1,5 +1,5 @@
 
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
 # ═══════════════════════════════════════════════════════════
 #  ALPINE VM MANAGER - ULTIMATE EDITION
@@ -382,6 +382,18 @@ install_docker() {
     fi
 }
 
+# Launch documentation website
+launch_docs() {
+    echo -e "${CYAN}📚 Launching documentation website...${NC}"
+
+    if [ -f "$HOME/proot-avm/docs.sh" ]; then
+        bash "$HOME/proot-avm/docs.sh"
+    else
+        echo -e "${RED}❌ Documentation script not found. Run from proot-avm directory.${NC}"
+        exit 1
+    fi
+}
+
 # Show help
 show_help() {
     cat << EOF
@@ -398,6 +410,42 @@ ${CYAN}VM CONTROL:${NC}
   ${GREEN}stop${NC}                  Stop VM gracefully
   ${GREEN}restart [mode]${NC}        Restart VM
   ${GREEN}status${NC}                Show VM status
+  ${GREEN}dashboard${NC}         Launch web dashboard for VM management
+  ${GREEN}tui${NC}               Launch Terminal User Interface
+  ${GREEN}docs${NC}              Launch documentation website
+
+${CYAN}VM MANAGEMENT:${NC}
+  ${GREEN}ssh${NC}                   SSH into VM (port $SSH_PORT)
+  ${GREEN}exec <command>${NC}        Execute command in VM via SSH
+  ${GREEN}console${NC}               Enter PRoot Ubuntu console
+  ${GREEN}monitor${NC}               Monitor VM logs live
+  ${GREEN}info${NC}                  Show VM disk information
+  ${GREEN}configure${NC}             Configure VM settings
+  ${GREEN}install-docker${NC}        Install Docker in VM
+
+${CYAN}SNAPSHOTS:${NC}
+  ${GREEN}snap create <name>${NC}    Create snapshot
+  ${GREEN}snap list${NC}             List snapshots
+  ${GREEN}snap restore <name>${NC}   Restore snapshot
+  ${GREEN}snap delete <name>${NC}    Delete snapshot
+
+${CYAN}BACKUP:${NC}
+  ${GREEN}backup <file>${NC}         Backup VM disk
+  ${GREEN}resize <size>${NC}         Resize VM disk (e.g., +5G)
+
+${CYAN}HELP:${NC}
+  ${GREEN}help${NC}                  Show this help
+  ${GREEN}version${NC}               Show version
+
+${CYAN}EXAMPLES:${NC}
+  avm start console          # Start in console mode
+  avm start vnc 8080-:80     # Start with port forwarding
+  avm ssh                    # Connect via SSH
+  avm snap create mybackup   # Create snapshot
+  avm first-boot             # Initial Alpine setup
+
+EOF
+}
   ${GREEN}monitor${NC}               Monitor VM logs (live)
 
 ${CYAN}CONNECTION:${NC}
@@ -459,6 +507,7 @@ case "$1" in
     console) console_proot ;;
     config|configure) configure_vm ;;
     docker-install) install_docker ;;
+    first-boot) load_config; first_boot_setup ;;
     help|--help|-h) show_help ;;
     *)
         if [ -z "$1" ]; then

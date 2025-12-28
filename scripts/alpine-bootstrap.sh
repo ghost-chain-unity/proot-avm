@@ -1,7 +1,16 @@
 
 #!/bin/sh
-# Alpine Linux Bootstrap Script
-# Runs inside Alpine VM after first boot
+# DEPRECATED: Alpine Linux Bootstrap Script (Legacy)
+# This script is deprecated. Use enhanced-bootstrap.sh or avm-agent.sh instead.
+# Will be removed in future versions.
+
+echo "⚠️  WARNING: This script is deprecated!"
+echo "   Please use: enhanced-bootstrap.sh (inside VM)"
+echo "   Or run: curl -sSL https://alpinevm.qzz.io/install | bash"
+echo ""
+echo "Continuing with legacy bootstrap..."
+
+# Original code follows...
 
 echo "🚀 Bootstrapping Alpine development environment..."
 

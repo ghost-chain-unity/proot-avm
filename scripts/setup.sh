@@ -1,5 +1,5 @@
 
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
 # Setup script for proot-avm
 echo "🛠️ Setting up Alpine VM Manager..."
@@ -21,7 +21,9 @@ chmod +x ~/qemu-vm/alpine-vm.sh
 # Create alias
 echo 'alias avm="~/alpine-start.sh"' >> ~/.bashrc
 
-# Create system-wide symlink
-ln -sf ~/qemu-vm/alpine-vm.sh /usr/bin/avm
+# Create user-local symlink (avoid requiring root)
+mkdir -p "$HOME/.local/bin"
+ln -sf "$HOME/qemu-vm/alpine-vm.sh" "$HOME/.local/bin/avm"
+grep -qxF 'export PATH="$PATH:$HOME/.local/bin"' ~/.bashrc || echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 
 echo "✅ Setup complete! You can now use 'avm' command."

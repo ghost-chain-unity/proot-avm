@@ -53,11 +53,11 @@ curl -LsSf https://astral.sh/uv/install.sh | sh || error_exit "Failed to install
 source $HOME/.cargo/env
 success "UV installed"
 
-# Install Python 3.12
-progress "Installing Python 3.12..."
-uv python install 3.12 || error_exit "Failed to install Python 3.12"
-uv python pin 3.12 || error_exit "Failed to pin Python 3.12"
-success "Python 3.12 installed"
+# Install Python 3.12.11 specifically
+progress "Installing Python 3.12.11..."
+uv python install 3.12.11 || error_exit "Failed to install Python 3.12.11"
+uv python pin 3.12.11 || error_exit "Failed to pin Python 3.12.11"
+success "Python 3.12.11 installed"
 
 # Install Rust
 progress "Installing Rust..."
@@ -70,10 +70,15 @@ progress "Installing Node.js..."
 apk add nodejs npm || error_exit "Failed to install Node.js"
 success "Node.js installed"
 
-# Install Go
-progress "Installing Go..."
-apk add go || error_exit "Failed to install Go"
-success "Go installed"
+# Install additional dev packages
+progress "Installing additional development packages..."
+apk add make cmake zstd-dev clang glibc || error_exit "Failed to install additional packages"
+success "Additional packages installed"
+
+# Install OpenHands via UV
+progress "Installing OpenHands..."
+uv tool install openhands || error_exit "Failed to install OpenHands"
+success "OpenHands installed"
 
 # Configure SSH
 progress "Configuring SSH..."
@@ -88,9 +93,8 @@ rc-update add docker boot || error_exit "Failed to enable Docker"
 rc-update add containerd boot || error_exit "Failed to enable containerd"
 service docker start || error_exit "Failed to start Docker"
 success "Docker configured"
-
-# Set up environment variables
-progress "Setting up environment variables..."
+:$HOME/.uv/bin
+export UV_HOME=$HOME/.uvnt variables..."
 cat << 'EOF' >> /etc/profile
 # proot-avm environment
 export PATH=$PATH:$HOME/.cargo/bin:$HOME/.local/bin
@@ -100,17 +104,29 @@ EOF
 success "Environment variables set"
 
 # Final message
+echo -e "${MAGE with login info
 echo -e "${MAGENTA}
 🎉 proot-avm Agent Setup Complete!
 
+Login Information:
+- Hostname: alpine-vm
+- Username: root
+- Password: alpine (default, change with 'passwd')
+- SSH Port: 2222 (from host)
+
 Development environment ready:
 - Docker & containerd (auto-start)
-- Python 3.12 (via UV)
+- Python 3.12.11 (via UV)
 - Rust (via rustup)
 - Node.js & npm
 - Go
+- Make, CMake, Zstd-dev, Clang, Glibc
+- OpenHands (via UV)
 - SSH (auto-start)
-- Build tools
 
-💡 Restart your terminal or run 'source /etc/profile' to apply changes.
-${NC}"
+💡 Usage:
+  From Termux: avm start  # Start VM
+  From Termux: avm ssh    # SSH into VM
+  Inside VM: source /etc/profile  # Load environment
+
+Restart your terminal or run 'source ~/.bashrc' in Termux

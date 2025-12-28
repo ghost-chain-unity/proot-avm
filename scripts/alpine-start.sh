@@ -1,5 +1,5 @@
 
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
 # Alpine VM Starter - Termux Side
 echo "🚀 Launching Alpine VM Manager..."

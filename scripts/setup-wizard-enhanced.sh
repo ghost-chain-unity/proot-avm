@@ -1,5 +1,5 @@
 
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
 # Enhanced Alpine VM Setup Wizard
 # Fully automated setup with better error handling and user experience
@@ -114,7 +114,7 @@ install_dev_environment() {
 
     # Copy bootstrap script to VM
     proot-distro login ubuntu --termux-home -- bash -c "
-        cd ~/qemu-vm && cp /usr/bin/alpine-bootstrap.sh .
+        cd ~/qemu-vm && cp \"$SCRIPT_DIR/../scripts/alpine-bootstrap.sh\" .
         chmod +x alpine-bootstrap.sh
         ./alpine-bootstrap.sh
     " || handle_error "Failed to install development environment"
@@ -129,11 +129,13 @@ install_avm() {
     # Prefer repo-local script when running from source tree
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-    cp "$SCRIPT_DIR/alpine-vm.sh" ~/qemu-vm/ 2>/dev/null || cp /usr/bin/alpine-vm.sh ~/qemu-vm/ || handle_error "Failed to copy AVM script"
+    cp "$SCRIPT_DIR/../scripts/alpine-vm.sh" ~/qemu-vm/ 2>/dev/null || cp /usr/bin/alpine-vm.sh ~/qemu-vm/ || handle_error "Failed to copy AVM script"
     chmod +x ~/qemu-vm/alpine-vm.sh || handle_error "Failed to set permissions"
 
-    # Create symlink
-    ln -sf ~/qemu-vm/alpine-vm.sh /usr/bin/avm || handle_error "Failed to create symlink"
+    # Create user-local symlink (avoid requiring root)
+    mkdir -p "$HOME/.local/bin" || handle_error "Failed to create local bin"
+    ln -sf "$HOME/qemu-vm/alpine-vm.sh" "$HOME/.local/bin/avm" || handle_error "Failed to create symlink"
+    grep -qxF 'export PATH="$PATH:$HOME/.local/bin"' ~/.bashrc || echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc || handle_error "Failed to update bashrc PATH"
 
     echo -e "${GREEN}✅ AVM management tool installed${NC}"
 }

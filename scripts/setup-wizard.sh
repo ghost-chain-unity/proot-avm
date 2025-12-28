@@ -1,5 +1,5 @@
 
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
 # Alpine VM Setup Wizard
 # Interactive setup for proot-avm
@@ -50,7 +50,7 @@ echo -e "\e[0;32m[5/5] Installing development environment...\e[0m"
 
 # Copy bootstrap script to VM
 proot-distro login ubuntu --termux-home -- bash -c "
-    cd ~/qemu-vm && cp /usr/bin/alpine-bootstrap.sh .
+    cd ~/qemu-vm && cp \"$SCRIPT_DIR/../scripts/alpine-bootstrap.sh\" .
     chmod +x alpine-bootstrap.sh
     ./alpine-bootstrap.sh
 "
@@ -62,9 +62,11 @@ echo -e "\e[0;32m[6/6] Installing AVM management tool...\e[0m"
 # Use script directory when running from source tree
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-cp "$SCRIPT_DIR/alpine-vm.sh" ~/qemu-vm/ 2>/dev/null || cp /usr/bin/alpine-vm.sh ~/qemu-vm/ 2>/dev/null || true
+cp "$SCRIPT_DIR/../scripts/alpine-vm.sh" ~/qemu-vm/ 2>/dev/null || cp /usr/bin/alpine-vm.sh ~/qemu-vm/ 2>/dev/null || true
 chmod +x ~/qemu-vm/alpine-vm.sh
-ln -sf ~/qemu-vm/alpine-vm.sh /usr/bin/avm
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$HOME/qemu-vm/alpine-vm.sh" "$HOME/.local/bin/avm"
+    grep -qxF 'export PATH="$PATH:$HOME/.local/bin"' ~/.bashrc || echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 
 # Step 7: Configure bashrc and environment
 echo -e "\e[0;32m[7/7] Configuring bashrc and environment...\e[0m"
